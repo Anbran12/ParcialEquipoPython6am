@@ -1,3 +1,4 @@
+#Santiago Andres Echeverri Montoya
 class Estudiante:
     def _init_(self, nombre, apellido, carnet, semestre, promedio):
         self.nombre = nombre
