@@ -5,12 +5,10 @@ class Principal:
     def __init__(self):
         DBancoUsuarios = deque()
         DBancoCreditos = deque()
-        DBancoTUsuarios = deque()
-        DBancoTCreditos = deque()
+        DBancoUsuariosCredito = deque()
         self.DBancoUsuarios = DBancoUsuarios
         self.DBancoCreditos = DBancoCreditos
-        self.DBancoTUsuarios = DBancoTUsuarios
-        self.DBancoTCreditos = DBancoTCreditos
+        self.DBancoUsuariosCredito = DBancoUsuariosCredito
 
 
     def login(self):
@@ -103,9 +101,10 @@ class Principal:
         self.DBancoTUsuarios.append(ObjB.Creditos(NomCredito,ValorCredito,Duracion))
         
     def asignarcredito(self):
-        print("\nIngresa los datos del usurio:")
-        Idcliente, Nombrecredito = -1,""
+        print("\nIngresa los datos del usuario:")
+        Idcliente, Nombrecredito, credito = -1,"",""
         cliente,credito = None,None
+        estadocliente, estadocredito = True,True
         while Idcliente == -1:
             try:
                 Id = int(input("\nIngresa el ID del cliente: "))
@@ -116,6 +115,16 @@ class Principal:
             for i in range(len(self.DBancoUsuarios)):
                 if self.DBancoUsuarios[i].idusuario == Idcliente:
                     cliente = self.DBancoUsuarios[i]
+                    while credito == "":
+                        credito = input("\nIngresa el ID del cliente: ")
+                    while self.DBancoCreditos:
+                        for i in range(len(self.DBancoCreditos)):
+                            if self.DBancoCreditos[i].tipocredito == credito:
+                                 credito = self.DBancoCreditos[i]
+                                 self.DBancoUsuariosCredito.append(cliente,credito)
+                        if estadocredito:
+                             print("El credito buscado no existe.")
+
                     break
             if not self.usuario:
                 print("\nEl usuario no existe.")
