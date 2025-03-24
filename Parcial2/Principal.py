@@ -5,169 +5,219 @@ import ObjBanco as ObjB
 class Principal:
     def __init__(self):
         DBancoUsuarios = deque()
-        DBancoCreditos = deque()
-        DBancoUsuariosCredito = deque()
+        DBancoUsuariosTemporal = deque()
         self.DBancoUsuarios = DBancoUsuarios
-        self.DBancoCreditos = DBancoCreditos
-        self.DBancoUsuariosCredito = DBancoUsuariosCredito
+        self.DBancoUsuariosTemporal = DBancoUsuariosTemporal
 
     def login(self):
+        usuario = False
         Idlogin = -1
         while Idlogin < 0:
             try:
                 Idlogin = int(input("\nIngresa tu ID para poder iniciar: "))
             except ValueError:
                 print("El valor ingresado no es valido.")
-
             for i in range(len(self.DBancoUsuarios)):
                 if self.DBancoUsuarios[i].idusuario == Idlogin:
-                    self.usuario = self.DBancoUsuarios[i]
-                    break
-            if not self.usuario:
+                    usuario = self.DBancoUsuarios[i]
+                    if usuario.rol == "cliente":
+                        print(
+                            "\nMenú:",
+                            "\n1. Buscar credito",
+                            "\n2. Solicitar credito",
+                            "\n0. Salir",
+                        )
+                        opcion = -1
+                        while opcion in [0, 1, 2]:
+                            try:
+                                opcion = int(input("\nIngresa la opción: "))
+                            except ValueError:
+                                print("Valor no valido.")
+                        if opcion == 1:
+                            pass
+                        if opcion == 2:
+                            pass
+                        if opcion == 3:
+                            pass
+                        if opcion == 0:
+                            pass
+                    elif usuario.rol == "admin":
+                        print(
+                            "\nMenú:",
+                            "\n1. Registrar credito",
+                            "\n2. Registrar cliente",
+                            "\n3. Asignar credito",
+                            "\n0. Salir",
+                        )
+                        opcion = -1
+                        while opcion in [0, 1, 2, 3]:
+                            try:
+                                opcion = int(input("\nIngresa la opción: "))
+                            except ValueError:
+                                print("Valor no valido.")
+                        if opcion == 1:
+                            pass
+                        if opcion == 2:
+                            pass
+                        if opcion == 3:
+                            pass
+                        if opcion == 0:
+                            pass
+                    else:
+                        # Registrarse
+                        pass
+            if usuario == False:
                 print("\nEl usuario no existe.")
                 break
-        if self.usuario.rol == "cliente":
-            print(
-                "\nMenú:", "\n1. Buscar credito", "\n2. Solicitar credito", "\n0. Salir"
-            )
-            opcion = int(input("\nIngresa la opción: "))
-            if opcion == 1:
-                pass
-            if opcion == 2:
-                pass
-            if opcion == 3:
-                pass
-            if opcion == 0:
-                pass
-        elif self.usuario.rol == "admin":
-            print(
-                "\nMenú:",
-                "\n1. Registrar credito",
-                "\n2. Registrar cliente",
-                "\n3. Asignar credito",
-                "\n0. Salir",
-            )
-            opcion = int(input("\nIngresa la opción: "))
-            if opcion == 1:
-                pass
-            if opcion == 2:
-                pass
-            if opcion == 3:
-                pass
-            if opcion == 0:
-                pass
-        else:
-            # Registrarse
-            pass
 
     def regitrarse(self):
-        print("\nIngresa los datos del usurio:")
+        print("\nIngresa los datos del usuario:")
         Id, Nom, rol = -1, "", ""
-        while Id < 0:
-            try:
-                Id = int(input("\nIngresa el ID del cliente: "))
-            except ValueError:
-                print("El valor ingresado no es valido.")
-        while Nom == "":
-            Nom = input("Ingresa el nombre: ")
-            if Nom == "":
-                print("Debe indicar al menos un carácter.\n")
-        while rol not in ["cliente", "cero", "0"]:
-            rol = input("Ingresa el rol (si no aplica indicar cero (0)): ")
-            if rol in ["admin"]:
-                print("Rol admin asignado correctamente\n")
-            elif rol.lower() in ["cliente", "cero", "0"]:
-                print("\nFelicidades ahora eres cliente.")
-        self.DBancoUsuarios.append(ObjB.Usuarios(Id, Nom, rol))
+        usuarionoexiste = True
+        while usuarionoexiste:
+            while Id < 0:
+                try:
+                    Id = int(input("\n- Ingresa el ID del cliente: "))
+                except ValueError:
+                    print("El valor ingresado no es valido.")
+                for i in range(len(self.DBancoUsuarios)):
+                    if self.DBancoUsuarios[i].idusuario == Id:
+                        print("\nEl usuario ingresado ya registra en el sistema.")
+                        usuarionoexiste = False
+                if usuarionoexiste:
+                    while Nom == "":
+                        Nom = input("- Ingresa el nombre: ")
+                        if Nom == "":
+                            print("Debe indicar al menos un carácter.\n")
+                    while rol not in ["cliente", "admin"]:
+                        rol = input(
+                            "- Ingresa el rol (si no aplica indicar cero (0)): "
+                        )
+                        if rol in ["admin"]:
+                            rol = "admin"
+                            print("Rol admin asignado correctamente\n")
+                        elif rol.lower() in ["cliente", "cero", "0"]:
+                            rol = "cliente"
+                            print("\nFelicidades ahora eres cliente.")
+                    self.DBancoUsuarios.append(ObjB.Usuarios(Id, Nom, rol))
+                    usuarionoexiste = False
 
-    def registrarcredito(self):
-        print("\nIngresa los datos del credito a registrar:")
-        NomCredito, ValorCredito, Duracion = "", -1.0, -1
-        while NomCredito == "":
-            NomCredito = input("\nIngresa el nombre del credito: ")
-            if NomCredito == "":
-                print("Debe indicar al menos un carácter.\n")
-        while ValorCredito < 0.0:
+    def buscarcredito(self):
+        print(
+            "\nBajo que criterio desea realizar la busqueda:",
+            "\n1. Nombre.",
+            "\n2. Rango valor.",
+            "\n0. Volver al menú anterior."
+        )
+        opcion = -1
+        while opcion in [0, 1, 2]:
             try:
-                ValorCredito = float(input("Ingresa el valor del credito: "))
+                opcion = int(input("\nIngresa la opción: "))
             except ValueError:
-                print("El valor ingresado no es valido.")
-        while Duracion < 0:
-            try:
-                Duracion = int(input("Ingresa la duración del credito en meses: "))
-            except ValueError:
-                print("El valor ingresado no es valido.")
+                print("Valor no valido.")
+        if opcion == 1:
+            CNombre = ""
+            while CNombre == "":
+                CNombre = input("\n- Ingresa el nombre del credito: ")
+                if CNombre == "":
+                    print("Debe indicar al menos un carácter.\n")
+            for 
+        if opcion == 2:
+            CValorMinimo, CValorMaximo = -1.0, -1.0
+            while CValorMinimo < 0:
+                try:
+                    CValorMinimo = float(input("\nIngresa el valor mínimo: "))
+                except ValueError:
+                    print("Valor no valido.")
+            while CValorMaximo < 0:
+                try:
+                    CValorMaximo = float(input("\nIngresa el valor máximo: "))
+                except ValueError:
+                    print("Valor no valido.")
 
-        self.DBancoCreditos.append(ObjB.Creditos(NomCredito, ValorCredito, Duracion))
-        print("Registro exitoso.")
-
+        if opcion == 0:
+            pass
     def asignarcredito(self):
-        print("\nIngresa los datos del usuario y el credito a asignar:")
-        Idcliente, Nombrecredito, credito = -1, "", ""
-        cliente, credito = None, None
-        estadocliente, estadocredito = True, True
-        while Idcliente < 0:
-            try:
-                Idcliente = int(input("\nIngresa el ID del cliente: "))
-            except ValueError:
-                print("El valor ingresado no es valido.")
-
-        while self.DBancoUsuarios:
+        print("\nIngresa los datos del usuario:")
+        busquedacliente = True
+        while busquedacliente:
+            Idcliente = -1
+            Objcliente = None
+            while Idcliente < 0:
+                try:
+                    Idcliente = int(input("\n- Ingresa el ID del cliente: "))
+                except ValueError:
+                    print("El valor ingresado no es valido.")
             for i in range(len(self.DBancoUsuarios)):
                 if self.DBancoUsuarios[i].idusuario == Idcliente:
-                    cliente = self.DBancoUsuarios[i]
-                    estadocliente = False
-                    while Nombrecredito == "":
-                        Nombrecredito = input("Ingresa nombre del credito: ")
-                    while self.DBancoCreditos:
-                        for i in range(len(self.DBancoCreditos)):
-                            if self.DBancoCreditos[i].tipocredito == Nombrecredito:
-                                credito = self.DBancoCreditos[i]
-                                self.DBancoUsuariosCredito.append(cliente, credito)
-                                estadocredito = False
-                        if estadocredito:
-                            print("El credito buscado no existe.")
-                    break
-            if not estadocliente:
+                    busquedacliente = False
+                    asignarmismocliente = True
+                    while asignarmismocliente:
+                        Objcliente = self.DBancoUsuarios[i]
+                        print("\nIngresa los datos del credito a registrar:")
+                        CNombre, CValor, CDuracion = "", -1.0, -1
+                        while CNombre == "":
+                            CNombre = input("\n- Ingresa el nombre del credito: ")
+                            if CNombre == "":
+                                print("Debe indicar al menos un carácter.\n")
+                        while CValor < 0.0:
+                            try:
+                                CValor = float(input("- Ingresa el valor: "))
+                            except ValueError:
+                                print("El valor ingresado no es valido.")
+                        while CDuracion < 0:
+                            try:
+                                CDuracion = int(
+                                    input(
+                                        "- Ingresa la duración del credito en meses: "
+                                    )
+                                )
+                            except ValueError:
+                                print("El valor ingresado no es valido.")
+
+                        CanCreditos = len(Objcliente.creditos)
+                        Objcliente.creditos[CanCreditos + 1] = ObjB.Creditos(
+                            CNombre, CValor, CDuracion
+                        )
+                        print("Registro exitoso.")
+                        otrocredito = ""
+                        while otrocredito.lower() not in ["s", "n"]:
+                            otrocredito = input(
+                                "\n¿Desea ingresa otro credito para el mismo cliente? (S/N): "
+                            )
+                            if otrocredito.lower() == "n":
+                                asignarmismocliente = False
+                        clienteexite = True
+            if clienteexite == False:
                 print("\nEl usuario no existe.")
-                break
+                otrabusqueda = ""
+                while otrabusqueda.lower() not in ["s", "n"]:
+                    otrabusqueda = input("\n¿Desea buscar otro cliente? (S/N): ")
+                    if otrabusqueda.lower() == "n":
+                        busquedacliente = False
 
     def mostrarpilas(self):
-        (
-            estadocliente,
-            estadocredito,
-            estadoclientecredito,
-        ) = (
-            True,
-            True,
-            True,
-        )
+        EstadoPila = True
         print("\nPila usuarios: ")
         while self.DBancoUsuarios:
             for i in range(len(self.DBancoUsuarios)):
+                estadocreditos = True
                 print(
-                    f"\nId: {self.DBancoUsuarios[i].idusuario}\nNombre: {self.DBancoUsuarios[i].nombreusuario}\nRol: {self.DBancoUsuarios[i].rol}"
+                    f"\nId: {self.DBancoUsuarios[i].idusuario}",
+                    f"\nNombre: {self.DBancoUsuarios[i].nombreusuario}",
+                    f"\nRol: {self.DBancoUsuarios[i].rol}",
                 )
-            estadocliente = False
-        if estadocliente:
+                for Ncredito, credito in self.DBancoUsuarios[i].creditos.items():
+                    print(
+                        f"\nCredito: {Ncredito}",
+                        f"\nTipo: {credito.tipocredito}",
+                        f"\nValor: {credito.valorcredito}",
+                        f"\nDuración: {credito.duracion}",
+                    )
+                    estadocreditos = False
+                if estadocreditos:
+                    print("\nCreditos: Cliente sin creditos.")
+            EstadoPila = False
+            break
+        if EstadoPila:
             print("\nPila clientes vacía.")
-
-        print("\nPila creditos: ")
-        while self.DBancoCreditos:
-            for i in range(len(self.DBancoCreditos)):
-                print(
-                    f"\nTipo: {self.DBancoCreditos[i].tipocredito}\nValor: {self.DBancoCreditos[i].valorcredito}\nDuración: {self.DBancoCreditos[i].duracion}"
-                )
-            estadocliente = False
-        if estadocredito:
-            print("\nPila creditos vacía.")
-
-        print("\nPila clientes con credito: ")
-        while self.DBancoUsuariosCredito:
-            for i in range(len(self.DBancoUsuariosCredito)):
-                print(
-                    f"\nId: {self.DBancoUsuariosCredito[i].idusuario}\nNombre: {self.DBancoUsuariosCredito[i].nombreusuario}\nRol: {self.DBancoUsuariosCredito[i].rol}\nTipo: {self.DBancoCreditos[i].tipocredito}\nValor: {self.DBancoCreditos[i].valorcredito}\nDuración: {self.DBancoCreditos[i].duracion}"
-                )
-            estadocliente = False
-        if estadoclientecredito:
-            print("\nPila creditos con clientes vacía.")

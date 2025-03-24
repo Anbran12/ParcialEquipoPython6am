@@ -3,9 +3,8 @@ import Principal as P
 class Banco:
     def banco(self):
         Obj = P.Principal()
-#        Obj.login()
         Obj.regitrarse()
-        Obj.registrarcredito()
+        Obj.login()
         Obj.asignarcredito()
         Obj.mostrarpilas()
 #        while Id == -1:
