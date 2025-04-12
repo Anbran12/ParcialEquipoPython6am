@@ -115,6 +115,7 @@ class Metodos:
                             newaux = 1400000
                         elif newedad < 18 and newedad > 0:
                             newaux = 1120000
+                        self.persona[i].auxilio = newaux
                         self.persona[i].edad = newedad
                         print("Valor modificado con exito.")
                     elif opcion == 2:
